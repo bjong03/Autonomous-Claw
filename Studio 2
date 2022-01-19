@@ -1,0 +1,49 @@
+#include <Servo.h>
+#define VCC_PIN 13
+#define TRIGGER_PIN 12
+#define ECHO_PIN 11  
+#define GROUND_PIN 10     //
+#define MAX_DISTANCE 200
+
+Servo myservo;  // create servo object to control a servo
+// twelve servo objects can be created on most boards
+
+int pos = 0;    // variable to store the servo position
+long duration;
+int distance;
+
+void setup() {
+  myservo.attach(9);// attaches the servo on pin 9 to the servo object
+    Serial.begin(9600);
+    pinMode(ECHO_PIN, INPUT);
+    pinMode(TRIGGER_PIN, OUTPUT);
+    pinMode(GROUND_PIN, OUTPUT);
+    pinMode(VCC_PIN, OUTPUT);
+    digitalWrite(GROUND_PIN,LOW);
+    digitalWrite(VCC_PIN, HIGH);
+}
+
+void loop() {
+    digitalWrite(TRIGGER_PIN, LOW);   // Clears the trigPin
+    delayMicroseconds(2);
+    digitalWrite(TRIGGER_PIN, HIGH);  // Sets the trigPin on HIGH state for 10 micro seconds
+    delayMicroseconds(20);
+    digitalWrite(TRIGGER_PIN, LOW);
+
+    duration = pulseIn(ECHO_PIN, HIGH);
+    distance= duration*0.034/2;       // Calculating the distance
+
+  // if the distance measurement becomes extremely high, it is likely an error.  
+  // Default to a maximum value of MAX_DISTANCE to identify this condition.
+    if (distance > MAX_DISTANCE){
+        distance = MAX_DISTANCE;
+    }   
+    Serial.print("Distance: ") ;      // Prints the distance on the Serial Monitor
+    Serial.println(distance);
+    if (distance <= 5) {
+        myservo.write(90);
+    }
+    else {
+        myservo.write(0);
+    }
+}
