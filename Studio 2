@@ -14,7 +14,7 @@ long duration;
 int distance;
 int sensor_data[10];
 int sensor_index = 0;
-bool claw_open = True;
+bool claw_open = true;
 int count = 0;
 
 void setup() {
@@ -69,7 +69,7 @@ void loop() {
         sensor_index = 0;
     }
     
-    while (claw_open == True) {
+    while (claw_open == true) {
         count = 0;
         for (int index = 0; index < 10; index++) {
             if (distance <= 7) {
@@ -78,7 +78,7 @@ void loop() {
         }
         
         if (count >= 5) {
-            claw_open = False;
+            claw_open = false;
         }
         distance = distance_checker();
         if (distance > MAX_DISTANCE) {
@@ -101,7 +101,7 @@ void loop() {
   //claw is now closed
 
   //check if claw went up
-  while (claw_open == False) {
+  while (claw_open == false) {
         count = 0;
         for (int index = 0; index < 10; index++) {
             if (distance >= 7) {
@@ -126,7 +126,7 @@ void loop() {
     }
    
   //check if claw went back down
-  while (claw_open == False) {
+  while (claw_open == false) {
         count = 0;
         for (int index = 0; index < 10; index++) {
             if (distance <= 7) {
@@ -135,7 +135,7 @@ void loop() {
         }
         
         if (count >= 5) {
-            claw_open = True;
+            claw_open = true;
         }
         distance = distance_checker();
         if (distance > MAX_DISTANCE) {
