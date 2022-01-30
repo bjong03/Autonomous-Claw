@@ -1,4 +1,5 @@
 #include <Servo.h>
+
 #define VCC_PIN 13
 #define TRIGGER_PIN 12
 #define ECHO_PIN 11  
@@ -11,6 +12,10 @@ Servo myservo;  // create servo object to control a servo
 int pos = 0;    // variable to store the servo position
 long duration;
 int distance;
+int sensor_data[10];
+int sensor_index = 0;
+bool claw_open = True;
+int count = 0;
 
 void setup() {
   myservo.attach(9);// attaches the servo on pin 9 to the servo object
@@ -21,9 +26,12 @@ void setup() {
     pinMode(VCC_PIN, OUTPUT);
     digitalWrite(GROUND_PIN,LOW);
     digitalWrite(VCC_PIN, HIGH);
+    for (int index = 0; index < 10; index++) {
+        sensor_data[index] = 1000;
+    }
 }
 
-void loop() {
+int distance_checker() {
     digitalWrite(TRIGGER_PIN, LOW);   // Clears the trigPin
     delayMicroseconds(2);
     digitalWrite(TRIGGER_PIN, HIGH);  // Sets the trigPin on HIGH state for 10 micro seconds
@@ -31,19 +39,120 @@ void loop() {
     digitalWrite(TRIGGER_PIN, LOW);
 
     duration = pulseIn(ECHO_PIN, HIGH);
-    distance= duration*0.034/2;       // Calculating the distance
+    distance = duration*0.034/2;       // Calculating the distance
+  
+    return distance;
+}
 
-  // if the distance measurement becomes extremely high, it is likely an error.  
-  // Default to a maximum value of MAX_DISTANCE to identify this condition.
-    if (distance > MAX_DISTANCE){
-        distance = MAX_DISTANCE;
-    }   
+//Returns 1 if distance is MAX, otherwise returns 0
+int distance_max (int distance) {
+    // if the distance measurement becomes extremely high, it is likely an error.  
+    // Default to a maximum value of MAX_DISTANCE to identify this condition.
+    if (distance > MAX_DISTANCE) {
+          distance = MAX_DISTANCE;
+          return distance;
+    } 
+    return 0;
+}
+
+void loop() {
+    myservo.write(90); //initialize claw at 90 degrees
+    distance = distance_checker();
+    if (distance > MAX_DISTANCE) {
+          distance = MAX_DISTANCE;
+    } 
+    sensor_data[sensor_index] = distance;
+    sensor_index++;
     Serial.print("Distance: ") ;      // Prints the distance on the Serial Monitor
     Serial.println(distance);
-    if (distance <= 5) {
-        myservo.write(90);
+    if (sensor_index >= 10) {
+        sensor_index = 0;
     }
-    else {
-        myservo.write(0);
+    
+    while (claw_open == True) {
+        count = 0;
+        for (int index = 0; index < 10; index++) {
+            if (distance <= 7) {
+                count++;
+            }
+        }
+        
+        if (count >= 5) {
+            claw_open == False;
+        }
+        distance = distance_checker();
+        if (distance > MAX_DISTANCE) {
+            distance = MAX_DISTANCE;
+        } 
+        sensor_data[sensor_index] = distance;
+        sensor_index++;
+        Serial.print("Distance: ") ;      // Prints the distance on the Serial Monitor
+        Serial.println(distance);
+        if (sensor_index >= 10) {
+           sensor_index = 0;
+        }
     }
+    
+  for (pos = 90; pos >= 0; pos -= 1) { 
+      myservo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(10);                       // waits 15ms for the servo to reach the position
+  }
+  
+  //claw is now closed
+
+  //check if claw went up
+  while (claw_open == False) {
+        count = 0;
+        for (int index = 0; index < 10; index++) {
+            if (distance >= 7) {
+                count++;
+            }
+        }
+        
+        if (count >= 5) {
+            break;
+        }
+        distance = distance_checker();
+        if (distance > MAX_DISTANCE) {
+            distance = MAX_DISTANCE;
+        } 
+        sensor_data[sensor_index] = distance;
+        sensor_index++;
+        Serial.print("Distance: ") ;      // Prints the distance on the Serial Monitor
+        Serial.println(distance);
+        if (sensor_index >= 10) {
+           sensor_index = 0;
+        }
+    }
+   
+  //check if claw went back down
+  while (claw_open == False) {
+        count = 0;
+        for (int index = 0; index < 10; index++) {
+            if (distance <= 7) {
+                count++;
+            }
+        }
+        
+        if (count >= 5) {
+            claw_open == True;
+        }
+        distance = distance_checker();
+        if (distance > MAX_DISTANCE) {
+            distance = MAX_DISTANCE;
+        } 
+        sensor_data[sensor_index] = distance;
+        sensor_index++;
+        Serial.print("Distance: ") ;      // Prints the distance on the Serial Monitor
+        Serial.println(distance);
+        if (sensor_index >= 10) {
+           sensor_index = 0;
+        }
+    }
+  
+  for (pos = 0; pos <= 90; pos += 1) { 
+      myservo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(10);                       // waits 15ms for the servo to reach the position
+  }
+  
 }
