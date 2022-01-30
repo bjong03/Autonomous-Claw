@@ -45,17 +45,6 @@ int distance_checker() {
     return distance;
 }
 
-//Returns 1 if distance is MAX, otherwise returns 0
-int distance_max (int distance) {
-    // if the distance measurement becomes extremely high, it is likely an error.  
-    // Default to a maximum value of MAX_DISTANCE to identify this condition.
-    if (distance > MAX_DISTANCE) {
-          distance = MAX_DISTANCE;
-          return distance;
-    } 
-    return 0;
-}
-
 void loop() {
     myservo.write(90); //initialize claw at 90 degrees
     for (int index = 0; index < 10; index++) {
@@ -76,7 +65,7 @@ void loop() {
     while (claw_open == true) {
         count = 0;
         for (int index = 0; index < 10; index++) {
-            if (distance <= 7) {
+            if (sensor_data[index] <= 7) {
                 count++;
             }
         }
@@ -108,7 +97,7 @@ void loop() {
   while (claw_open == false && claw_bool == 0) {
         count = 0;
         for (int index = 0; index < 10; index++) {
-            if (distance >= 7) {
+            if (sensor_data[index] >= 7) {
                 count++;
             }
         }
@@ -133,7 +122,7 @@ void loop() {
   while (claw_open == false) {
         count = 0;
         for (int index = 0; index < 10; index++) {
-            if (distance <= 7) {
+            if (sensor_data[index] <= 7) {
                 count++;
             }
         }
