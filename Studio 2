@@ -78,7 +78,7 @@ void loop() {
         }
         
         if (count >= 5) {
-            claw_open == False;
+            claw_open = False;
         }
         distance = distance_checker();
         if (distance > MAX_DISTANCE) {
@@ -135,7 +135,7 @@ void loop() {
         }
         
         if (count >= 5) {
-            claw_open == True;
+            claw_open = True;
         }
         distance = distance_checker();
         if (distance > MAX_DISTANCE) {
