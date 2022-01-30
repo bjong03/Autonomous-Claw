@@ -58,6 +58,9 @@ int distance_max (int distance) {
 
 void loop() {
     myservo.write(90); //initialize claw at 90 degrees
+    for (int index = 0; index < 10; index++) {
+        sensor_data[index] = 1000;
+    }
     distance = distance_checker();
     if (distance > MAX_DISTANCE) {
           distance = MAX_DISTANCE;
@@ -155,5 +158,4 @@ void loop() {
       myservo.write(pos);              // tell servo to go to position in variable 'pos'
       delay(10);                       // waits 15ms for the servo to reach the position
   }
-  
 }
