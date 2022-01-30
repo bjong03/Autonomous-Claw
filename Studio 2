@@ -16,9 +16,10 @@ int sensor_data[10];
 int sensor_index = 0;
 bool claw_open = true;
 int count = 0;
+int claw_bool = 0;
 
 void setup() {
-  myservo.attach(9);// attaches the servo on pin 9 to the servo object
+    myservo.attach(9);// attaches the servo on pin 9 to the servo object
     Serial.begin(9600);
     pinMode(ECHO_PIN, INPUT);
     pinMode(TRIGGER_PIN, OUTPUT);
@@ -101,7 +102,7 @@ void loop() {
   //claw is now closed
 
   //check if claw went up
-  while (claw_open == false) {
+  while (claw_open == false && claw_bool == 0) {
         count = 0;
         for (int index = 0; index < 10; index++) {
             if (distance >= 7) {
@@ -110,7 +111,7 @@ void loop() {
         }
         
         if (count >= 5) {
-            break;
+            claw_bool = 1;
         }
         distance = distance_checker();
         if (distance > MAX_DISTANCE) {
