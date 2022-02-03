@@ -65,7 +65,7 @@ void loop() {
     while (claw_open == true) {
         count = 0;
         for (int index = 0; index < 10; index++) {
-            if (sensor_data[index] <= 7) {
+            if (sensor_data[index] <= 17) {
                 Serial.println("hi");
                 count++;
             }
@@ -100,7 +100,7 @@ void loop() {
   while ((claw_open == false) && (claw_bool == 0)) {
         count = 0;
         for (int index = 0; index < 10; index++) {
-            if (sensor_data[index] >= 7) {
+            if (sensor_data[index] >= 17) {
                 Serial.println("muahaha");
                 count++;
             }
@@ -130,7 +130,7 @@ void loop() {
         count = 0;
         for (int index = 0; index < 10; index++) {
             Serial.println("hehe!");
-            if (sensor_data[index] <= 7) {
+            if (sensor_data[index] <= 25) {
                 count++;
             }
         }
