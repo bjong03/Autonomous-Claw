@@ -126,13 +126,7 @@ void loop() {
 
   //5 Second Delay before the claw closes
   delay(5000);
-  
+  claw_open = true;
   //Opens claw
-  //Change position for different claw
-  for (pos = 180; pos >= 90; pos -= 5) { 
-      myservo.write(pos);              // tell servo to go to position in variable 'pos'
-      delay(10);                       // waits 15ms for the servo to reach the position
-  }
-  claw_bool = 0;
   
 }
