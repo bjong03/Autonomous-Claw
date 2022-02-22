@@ -67,7 +67,6 @@ void loop() {
         count = 0;
         for (int index = 0; index < 10; index++) {
             if (sensor_data[index] <= 17) {
-                Serial.println("hi");
                 count++;
             }
         }
@@ -103,7 +102,6 @@ void loop() {
         count = 0;
         for (int index = 0; index < 10; index++) {
             if (sensor_data[index] >= 17) {
-                Serial.println("muahaha");
                 count++;
             }
         }
